@@ -69,7 +69,7 @@ source .venv/bin/activate
 
 # Upgrade pip and install standard packages
 pip install --upgrade pip
-pip install pypdf cryptography pdfplumber flask
+pip install -r requirements.txt
 ```
 
 ### 3. Parse Existing Statements
