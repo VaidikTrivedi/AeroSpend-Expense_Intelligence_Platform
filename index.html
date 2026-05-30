@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroSpend // Premium Expense Intelligence</title>
+    <meta name="description" content="Visual expense analytics and transaction intelligence dashboard for bank statements. Analyze, categorize, and control your spend.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Blur Decorative Elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i data-lucide="compass" class="icon-glow"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>AeroSpend</h2>
+                    <span>Statement Intelligence</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#analytics-section" class="nav-item">
+                    <i data-lucide="pie-chart"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#ledger-section" class="nav-item">
+                    <i data-lucide="receipt"></i>
+                    <span>Ledger</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">VT</div>
+                    <div class="user-info">
+                        <h4>Vaidik Trivedi</h4>
+                        <span>Stakeholder Preview</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h1>Expense Intelligence</h1>
+                    <p>Interactive analysis of merged statement records (Amex, Triangle, Scotia)</p>
+                </div>
+                <div class="header-actions">
+                    <!-- File Upload Hooks -->
+                    <input type="file" id="pdfUploadInput" accept=".pdf" style="display: none;">
+                    <button class="btn btn-secondary" id="uploadPdfBtn">
+                        <i data-lucide="upload-cloud"></i>
+                        <span>Upload Statement PDF</span>
+                    </button>
+                    <button class="btn btn-primary" id="exportCsvBtn">
+                        <i data-lucide="download"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Metrics Overview Cards -->
+            <section class="metrics-grid">
+                <div class="metric-card glass">
+                    <div class="metric-header">
+                        <span class="metric-label">Total Outflow</span>
+                        <div class="metric-icon-box bg-purple-glow">
+                            <i data-lucide="arrow-up-right" class="text-purple"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="totalOutflowVal">$0.00</div>
+                    <div class="metric-subtext" id="totalOutflowSubtext">Excluding credit card payments</div>
+                </div>
+
+                <div class="metric-card glass">
+                    <div class="metric-header">
+                        <span class="metric-label">Total Payments</span>
+                        <div class="metric-icon-box bg-green-glow">
+                            <i data-lucide="arrow-down-left" class="text-green"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="totalPaymentsVal">$0.00</div>
+                    <div class="metric-subtext">Pre-authorized statement payments</div>
+                </div>
+
+                <div class="metric-card glass">
+                    <div class="metric-header">
+                        <span class="metric-label">Avg Transaction</span>
+                        <div class="metric-icon-box bg-blue-glow">
+                            <i data-lucide="activity" class="text-blue"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="avgTransactionVal">$0.00</div>
+                    <div class="metric-subtext" id="avgTransactionCount">0 purchase transactions</div>
+                </div>
+
+                <div class="metric-card glass">
+                    <div class="metric-header">
+                        <span class="metric-label">Primary Spend Category</span>
+                        <div class="metric-icon-box bg-orange-glow">
+                            <i data-lucide="trending-up" class="text-orange"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="topCategoryVal">-</div>
+                    <div class="metric-subtext" id="topCategorySubtext">0% of total spend</div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="visuals-grid" id="analytics-section">
+                <!-- Doughnut Chart Container -->
+                <div class="visual-card glass chart-card-large">
+                    <div class="card-header">
+                        <div>
+                            <h3>Category Allocation</h3>
+                            <p>Distributing transactions across defined expense brackets</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Trend Line Chart Container -->
+                <div class="visual-card glass chart-card-medium">
+                    <div class="card-header">
+                        <div>
+                            <h3>Daily Spending Outflow</h3>
+                            <p>Tracking day-by-day aggregate expenditure fluctuations</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transaction Ledger Section -->
+            <section class="ledger-section glass" id="ledger-section">
+                <div class="ledger-header">
+                    <div>
+                        <h3>Transaction Ledger</h3>
+                        <p>Fully searchable records extracted from merged statements</p>
+                    </div>
+                    
+                    <!-- Structured filter controls grid -->
+                    <div class="filter-controls">
+                        <!-- Search group -->
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="searchFilter" placeholder="Search merchant or amount...">
+                        </div>
+                        
+                        <!-- Category group -->
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="Grocery">Grocery</option>
+                            <option value="Gas/Automotive">Gas/Automotive</option>
+                            <option value="Stationery/Office">Stationery/Office</option>
+                            <option value="Dining/Cafes">Dining/Cafes</option>
+                            <option value="Travel/Transit">Travel/Transit</option>
+                            <option value="Utilities/Subscriptions">Utilities/Subscriptions</option>
+                            <option value="Shopping/Retail">Shopping/Retail</option>
+                            <option value="Payment/Refund">Payment/Refund</option>
+                            <option value="Other/Miscellaneous">Other/Miscellaneous</option>
+                        </select>
+                        
+                        <!-- Date range group -->
+                        <div class="date-filter-group">
+                            <div class="date-input-wrapper">
+                                <label for="fromDateFilter">From</label>
+                                <input type="date" id="fromDateFilter" class="filter-date">
+                            </div>
+                            <div class="date-input-wrapper">
+                                <label for="toDateFilter">To</label>
+                                <input type="date" id="toDateFilter" class="filter-date">
+                            </div>
+                        </div>
+
+                        <!-- Card Institution Filter Group -->
+                        <div class="institution-filter-group">
+                            <span class="filter-label">Cards:</span>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="instAmex" checked value="Amex">
+                                <span class="custom-checkbox">Amex</span>
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="instTriangle" checked value="Triangle">
+                                <span class="custom-checkbox">Triangle</span>
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="instScotia" checked value="Scotia">
+                                <span class="custom-checkbox">Scotia</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ledger Table -->
+                <div class="table-container">
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th class="col-date">Date</th>
+                                <th class="col-institution">Card</th>
+                                <th class="col-title">Merchant / Details</th>
+                                <th class="col-category">Category</th>
+                                <th class="col-amount text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody">
+                            <!-- Injected dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="ledger-footer">
+                    <span id="ledgerCountText">Showing 0 of 0 transactions</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i data-lucide="check-circle" class="toast-icon"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
